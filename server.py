@@ -1,17 +1,17 @@
+"""Init server to detect query emotions."""
+
 from flask import Flask, request, render_template
 from EmotionDetection.emotion_detection import emotion_detector
-
 
 app = Flask("Emotion Detector")
 
 @app.route("/emotionDetector")
 def emotion_detect():
-    # collect the query
+    """Collect query and return proper message."""
     text_to_analyze = request.args.get('textToAnalyze')
-    # get emotions parse dict
-    emotions = emotion_detector(text_to_analyze)
+    emotions = emotion_detector(text_to_analyze) # get emotions parse dict
     dom = emotions["dominant_emotion"]
-    if dom is None:
+    if emotions["dominant_emotion"] is None:
         msg = "Invalid text! Please try again!"
     else:
         msg = (
@@ -20,12 +20,11 @@ def emotion_detect():
             f"'fear': {emotions['fear']}, 'joy': {emotions['joy']}, "
             f"'sadness': {emotions['sadness']}. The dominant emotion is {dom}."
         )
-
     return msg
 
 @app.route("/")
 def render_index_page():
-    # render index
+    """Render index page."""
     return render_template("index.html")
 
 if __name__ == "__main__":
